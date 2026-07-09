@@ -1,0 +1,51 @@
+---
+name: conventions-ddd-clean-code
+description: Règles DDD tactiques et Clean Code à appliquer sur ce projet. Utiliser cette skill pour toute tâche de planification ou d'implémentation touchant au domaine métier (agrégats, value objects, use cases, repositories) ou à la qualité générale du code (nommage, taille des fonctions, duplication, gestion des erreurs). Se déclenche sur les tickets de type "feature" ou "bug".
+---
+
+# Conventions DDD & Clean Code
+
+## Règles DDD tactiques
+
+- **Agrégats** : chaque agrégat protège ses propres invariants. Une méthode publique sur l'agrégat ne doit jamais laisser l'objet dans un état invalide, même temporairement. Pas de setters publics qui contournent une règle métier.
+- **Value Objects** : immuables. Deux Value Objects avec les mêmes valeurs sont égaux (`equals`/`hashCode` sur la valeur, pas l'identité). Toute validation de format (ISBN, email...) vit dans le constructeur du Value Object, pas ailleurs.
+- **Repositories** : l'interface vit dans `domain/`, l'implémentation dans `infrastructure/`. Le domaine ne connaît jamais Spring Data JPA, Hibernate, ou toute autre dépendance d'infrastructure.
+- **Use Cases (Application)** : orchestrent le domaine, ne contiennent aucune règle métier elles-mêmes. Si une classe d'Application contient un `if` qui décide d'un comportement métier plutôt que d'appeler l'agrégat, c'est un signal que la règle est mal placée.
+- **Interface (contrôleurs)** : traduisent la requête HTTP en commande applicative et la réponse applicative en HTTP. Aucune logique métier, aucun accès direct à un repository.
+- **Domain Events** : un événement de domaine décrit un fait passé (`BookBorrowedEvent`, pas `BorrowBookCommand`). Il est immuable et ne contient que les données nécessaires à ses consommateurs.
+
+## Critères Clean Code
+
+- **Nommage explicite** : le nom d'une fonction ou d'une classe dit ce qu'elle fait sans qu'on ait besoin de lire son implémentation. Pas d'abréviations obscures.
+- **Fonctions courtes, responsabilité unique** : si une méthode fait plus d'une chose, elle doit être découpée.
+- **Pas de duplication (DRY)** : avant d'écrire une nouvelle méthode, vérifier qu'une méthode équivalente n'existe pas déjà dans l'agrégat ou le use case concerné.
+- **Gestion des erreurs par exceptions** : une règle métier violée lève une exception de domaine explicite (`MemberSuspendedException`, `LoanLimitExceededException`), jamais un code de retour ou un booléen silencieux.
+- **Commentaires** : expliquent le *pourquoi* (ex : pourquoi 21 jours, pourquoi 3 emprunts) plutôt que le *quoi*, qui doit être lisible dans le code lui-même.
+
+## Avant d'écrire du code
+
+1. Identifier dans quelle couche (Domain / Application / Infrastructure / Interface) chaque changement se situe.
+2. Vérifier `docs/domaine.md` pour les invariants déjà établis avant d'en introduire un nouveau ou d'en modifier un existant.
+3. Ne pas ajouter d'abstraction, de configuration, ou de flexibilité non demandée par le ticket — un ticket qui ajoute une règle ne doit pas devenir l'occasion de refactorer une couche entière.
+
+## Exemple
+
+**Mauvais** (règle métier dans le contrôleur) :
+```java
+@PostMapping("/loans")
+public ResponseEntity<?> borrow(@RequestBody BorrowRequest req) {
+    if (memberRepository.findById(req.memberId()).getActiveLoans().size() >= 3) {
+        return ResponseEntity.badRequest().build();
+    }
+    // ...
+}
+```
+
+**Bon** (règle métier dans l'agrégat, contrôleur mince) :
+```java
+@PostMapping("/loans")
+public ResponseEntity<LoanResponse> borrow(@RequestBody BorrowRequest req) {
+    Loan loan = borrowBookUseCase.execute(new BorrowBookCommand(req.memberId(), req.bookId()));
+    return ResponseEntity.ok(LoanResponse.from(loan));
+}
+```
