@@ -1,0 +1,43 @@
+# ==== Java / Maven ====
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.properties
+
+# ==== IDE ====
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+bin/
+
+# ==== OS ====
+.DS_Store
+Thumbs.db
+
+# ==== Node / Angular (frontend futur) ====
+node_modules/
+dist/
+tmp/
+out-tsc/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# ==== Env / secrets ====
+.env
+.env.*
+*.local
