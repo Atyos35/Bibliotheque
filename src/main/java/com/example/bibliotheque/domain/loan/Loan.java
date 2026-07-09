@@ -51,6 +51,13 @@ public final class Loan {
         return loan;
     }
 
+    public static Loan reconstitute(LoanId id, BookId bookId, MemberId memberId, LocalDateTime borrowedAt,
+                                     LocalDateTime dueDate, LocalDateTime returnedAt) {
+        Loan loan = new Loan(id, bookId, memberId, borrowedAt, dueDate);
+        loan.returnedAt = returnedAt;
+        return loan;
+    }
+
     public void returnBook(LocalDateTime returnedAt) {
         Objects.requireNonNull(returnedAt, "returnedAt cannot be null.");
         if (!isActive()) {
