@@ -9,7 +9,7 @@ public final class Book {
     private final String title;
     private final String author;
     private final int totalCopies;
-    private final int availableCopies;
+    private int availableCopies;
 
     public Book(BookId id, ISBN isbn, String title, String author, int totalCopies, int availableCopies) {
         this.id = Objects.requireNonNull(id, "BookId cannot be null.");
@@ -23,6 +23,21 @@ public final class Book {
 
     public static Book create(BookId id, ISBN isbn, String title, String author, int totalCopies) {
         return new Book(id, isbn, title, author, totalCopies, totalCopies);
+    }
+
+    public void borrowCopy() {
+        if (availableCopies <= 0) {
+            throw new BookNotAvailableException("No available copy for book " + id + ".");
+        }
+        availableCopies--;
+    }
+
+    public void returnCopy() {
+        if (availableCopies >= totalCopies) {
+            throw new InvalidBookCopiesException(
+                    "availableCopies cannot exceed totalCopies (" + totalCopies + ") for book " + id + ".");
+        }
+        availableCopies++;
     }
 
     private static void validateCopies(int totalCopies, int availableCopies) {
