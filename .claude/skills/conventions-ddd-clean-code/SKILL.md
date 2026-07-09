@@ -1,6 +1,6 @@
 ---
 name: conventions-ddd-clean-code
-description: Règles DDD tactiques et Clean Code à appliquer sur ce projet. Utiliser cette skill pour toute tâche de planification ou d'implémentation touchant au domaine métier (agrégats, value objects, use cases, repositories) ou à la qualité générale du code (nommage, taille des fonctions, duplication, gestion des erreurs). Se déclenche sur les tickets de type "feature" ou "bug".
+description: Règles DDD tactiques et Clean Code à appliquer sur ce projet, backend Java/Spring et frontend Angular/TypeScript. Utiliser cette skill pour toute tâche de planification ou d'implémentation touchant au domaine métier (agrégats, value objects, use cases, repositories), au typage TypeScript, ou à la qualité générale du code (nommage, taille des fonctions, duplication, gestion des erreurs). Se déclenche sur les tickets de type "feature" ou "bug".
 ---
 
 # Conventions DDD & Clean Code
@@ -28,6 +28,14 @@ description: Règles DDD tactiques et Clean Code à appliquer sur ce projet. Uti
 2. Vérifier `docs/domaine.md` pour les invariants déjà établis avant d'en introduire un nouveau ou d'en modifier un existant.
 3. Ne pas ajouter d'abstraction, de configuration, ou de flexibilité non demandée par le ticket — un ticket qui ajoute une règle ne doit pas devenir l'occasion de refactorer une couche entière.
 
+## Typage TypeScript (Angular)
+
+- `strict: true` dans `tsconfig.json` (déjà activé au scaffold, section 4.1) — ne jamais l'affaiblir pour contourner une erreur de type.
+- Jamais de `any` explicite. Si le type est réellement inconnu à la compilation, utiliser `unknown` et le restreindre (narrowing) avant usage — pas de cast silencieux.
+- Chaque réponse HTTP consommée par un service Angular a une interface dédiée qui reflète exactement le contrat du backend (`BookResponse`, `LoanResponse`...), jamais un objet anonyme ou un `Record<string, any>`.
+- Les erreurs métier renvoyées par le backend (409 avec message, voir skill de l'étape Interface côté Java) sont typées elles aussi (`interface ApiError { message: string }`) plutôt que castées en `any` dans un `catchError`.
+- Pas de `!` (non-null assertion) pour contourner le strict null checking — traiter explicitement le cas `null`/`undefined` plutôt que l'écarter par assertion.
+
 ## Exemple
 
 **Mauvais** (règle métier dans le contrôleur) :
@@ -47,5 +55,19 @@ public ResponseEntity<?> borrow(@RequestBody BorrowRequest req) {
 public ResponseEntity<LoanResponse> borrow(@RequestBody BorrowRequest req) {
     Loan loan = borrowBookUseCase.execute(new BorrowBookCommand(req.memberId(), req.bookId()));
     return ResponseEntity.ok(LoanResponse.from(loan));
+}
+```
+
+**Mauvais** (typage relâché côté Angular) :
+```typescript
+borrowBook(payload: any): Observable<any> {
+  return this.http.post(this.apiUrl, payload);
+}
+```
+
+**Bon** (contrat typé de bout en bout) :
+```typescript
+borrowBook(payload: BorrowRequest): Observable<LoanResponse> {
+  return this.http.post<LoanResponse>(this.apiUrl, payload);
 }
 ```
