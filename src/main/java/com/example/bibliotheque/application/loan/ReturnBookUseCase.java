@@ -5,7 +5,9 @@ import com.example.bibliotheque.domain.book.BookRepository;
 import com.example.bibliotheque.domain.loan.Loan;
 import com.example.bibliotheque.domain.loan.LoanRepository;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class ReturnBookUseCase {
 
     private final LoanRepository loanRepository;

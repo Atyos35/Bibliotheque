@@ -10,7 +10,9 @@ import com.example.bibliotheque.domain.member.MemberCannotBorrowException;
 import com.example.bibliotheque.domain.member.MemberRepository;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class BorrowBookUseCase {
 
     private final BookRepository bookRepository;
