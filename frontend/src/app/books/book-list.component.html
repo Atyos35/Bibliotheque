@@ -1,0 +1,10 @@
+<h2>Livres disponibles</h2>
+@if (availableBooks.length === 0) {
+  <p>Aucun livre disponible pour le moment.</p>
+} @else {
+  <ul>
+    @for (book of availableBooks; track book.id) {
+      <li>{{ book.title }} — {{ book.author }} ({{ book.availableCopies }}/{{ book.totalCopies }} exemplaires)</li>
+    }
+  </ul>
+}
