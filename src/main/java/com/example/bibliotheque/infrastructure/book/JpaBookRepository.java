@@ -3,6 +3,7 @@ package com.example.bibliotheque.infrastructure.book;
 import com.example.bibliotheque.domain.book.Book;
 import com.example.bibliotheque.domain.book.BookId;
 import com.example.bibliotheque.domain.book.BookRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,13 @@ public class JpaBookRepository implements BookRepository {
     @Override
     public Optional<Book> findById(BookId id) {
         return springDataBookRepository.findById(id.value()).map(BookMapper::toDomain);
+    }
+
+    @Override
+    public List<Book> findAll() {
+        return springDataBookRepository.findAll().stream()
+                .map(BookMapper::toDomain)
+                .toList();
     }
 
     @Override

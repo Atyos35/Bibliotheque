@@ -1,5 +1,7 @@
 package com.example.bibliotheque.interfaces.book;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +46,7 @@ class BookControllerIntegrationTest {
 
     private BookId givenABookWithNoAvailableCopy() {
         BookId bookId = BookId.generate();
-        Book book = new Book(bookId, new ISBN("9780134685991"), "Effective Java", "Joshua Bloch", 1, 0);
+        Book book = new Book(bookId, new ISBN("9780132350884"), "Clean Code", "Robert C. Martin", 1, 0);
         springDataBookRepository.save(BookMapper.toEntity(book));
         return bookId;
     }
@@ -71,5 +73,18 @@ class BookControllerIntegrationTest {
     void availabilityReturnsNotFoundWhenBookDoesNotExist() throws Exception {
         mockMvc.perform(get("/api/books/" + BookId.generate() + "/availability"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void listReturnsAllBooksWithTheirAvailability() throws Exception {
+        BookId availableBookId = givenABookWithAvailableCopies();
+        BookId unavailableBookId = givenABookWithNoAvailableCopy();
+
+        mockMvc.perform(get("/api/books"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[*].id",
+                        containsInAnyOrder(availableBookId.toString(), unavailableBookId.toString())))
+                .andExpect(jsonPath("$[*].availableCopies", containsInAnyOrder(1, 0)));
     }
 }
