@@ -25,6 +25,10 @@ public final class Book {
         return new Book(id, isbn, title, author, totalCopies, totalCopies);
     }
 
+    public boolean isAvailable() {
+        return availableCopies > 0;
+    }
+
     public void borrowCopy() {
         if (availableCopies <= 0) {
             throw new BookNotAvailableException("No available copy for book " + id + ".");
