@@ -43,3 +43,81 @@ jobs:
           java-version: "21"
           cache: maven
       - run: mvn -B compile spotbugs:check
+
+  # Job séparé des jobs backend ci-dessus (pas de `needs:`) : un échec E2E se lit
+  # indépendamment dans l'onglet Checks, sans masquer ni bloquer le résultat de
+  # build-and-test/checkstyle/spotbugs, et inversement.
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Démarrer le backend (profil dev, H2) en arrière-plan
+        run: nohup mvn -B spring-boot:run -Dspring-boot.run.profiles=dev > backend.log 2>&1 &
+
+      # Un délai fixe (`sleep 30`, etc.) est fragile dans les deux sens : trop court, les
+      # tests démarrent avant que Spring Boot ait fini de s'initialiser et échouent au
+      # hasard selon la charge du runner ce jour-là ; trop long, il ralentit inutilement
+      # chaque run de CI même quand le backend est prêt bien avant. Interroger
+      # /actuator/health en boucle jusqu'à un 200 attend exactement le temps nécessaire,
+      # ni plus ni moins, et échoue explicitement (avec les logs backend en sortie) si le
+      # backend ne démarre jamais — plutôt que de laisser Playwright échouer plus tard avec
+      # une simple erreur de connexion refusée, bien moins facile à diagnostiquer.
+      - name: Attendre que le backend réponde sur /actuator/health
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8080/actuator/health > /dev/null; then
+              echo "Backend prêt après ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Le backend n'a pas répondu sur /actuator/health après 60s"
+          cat backend.log
+          exit 1
+
+      - name: Installer les dépendances frontend
+        run: npm ci
+        working-directory: frontend
+
+      - name: Installer Chromium pour Playwright
+        run: npx playwright install --with-deps chromium
+        working-directory: frontend
+
+      - name: Démarrer le frontend (ng serve) en arrière-plan
+        run: nohup npx ng serve > frontend.log 2>&1 &
+        working-directory: frontend
+
+      # Même raisonnement que pour le backend : ng serve doit compiler l'application avant
+      # d'accepter la moindre requête, et ce temps de compilation varie selon la charge du
+      # runner — un délai fixe serait tout aussi fragile ici.
+      - name: Attendre que le frontend réponde
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:4200/ > /dev/null; then
+              echo "Frontend prêt après ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Le frontend n'a pas répondu après 60s"
+          cat frontend.log
+          exit 1
+        working-directory: frontend
+
+      - name: Lancer les tests Playwright
+        run: npx playwright test
+        working-directory: frontend
