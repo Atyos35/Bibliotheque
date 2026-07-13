@@ -65,8 +65,12 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Démarrer le backend (profil dev, H2) en arrière-plan
-        run: nohup mvn -B spring-boot:run -Dspring-boot.run.profiles=dev > backend.log 2>&1 &
+      # Profil dev (H2) + e2e-seed : les scénarios Playwright référencent des livres et
+      # membres à IDs fixes (E2eDataSeeder) qui n'existent nulle part ailleurs — sans ce
+      # second profil, le catalogue reste vide et les tests bloquent en attendant des
+      # options de <select> qui n'apparaîtront jamais.
+      - name: Démarrer le backend (profils dev + e2e-seed) en arrière-plan
+        run: nohup mvn -B spring-boot:run -Dspring-boot.run.profiles=dev,e2e-seed > backend.log 2>&1 &
 
       # Un délai fixe (`sleep 30`, etc.) est fragile dans les deux sens : trop court, les
       # tests démarrent avant que Spring Boot ait fini de s'initialiser et échouent au
