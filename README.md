@@ -105,6 +105,36 @@ npx eslint .             # lint
 ng build                 # vérifie la compilation en mode strict
 ```
 
+### Tests E2E (Playwright)
+
+Les tests E2E (`frontend/e2e/`) pilotent l'application réelle par HTTP, dans un vrai navigateur — pas de mock, contrairement aux tests de composant ci-dessus. Cela demande les **deux serveurs démarrés simultanément**, plus un jeu de données fixe côté backend (aucun endpoint n'existe pour créer un livre ou un membre via l'API, donc les scénarios ont besoin d'un état connu à l'avance).
+
+**1. Backend, avec le profil `e2e-seed` en plus de `dev`** — insère au démarrage un livre jamais emprunté (pour le scénario catalogue), un livre dédié aux emprunts (pour le scénario succès), un membre actif, un membre `SUSPENDED`, et un membre ayant déjà 3 emprunts actifs. Ce profil n'est jamais actif par défaut, ni sous `mvn test`, ni en profil `prod` — voir `E2eDataSeeder`.
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev,e2e-seed
+```
+
+**2. Frontend, dans un second terminal :**
+
+```bash
+cd frontend
+ng serve
+```
+
+**3. Tests, dans un troisième terminal** (première utilisation : `npx playwright install chromium` pour télécharger le navigateur) :
+
+```bash
+cd frontend
+npx playwright test
+```
+
+Deux scénarios sont couverts :
+- `e2e/catalog.spec.ts` — la page `/books` affiche un livre du catalogue avec sa disponibilité (`X/Y exemplaires`).
+- `e2e/borrow.spec.ts` — sur `/loans` : un emprunt réussi affiche le message de confirmation ; un membre suspendu ou un membre ayant déjà 3 emprunts actifs se voit refuser l'emprunt avec le message métier renvoyé par le backend (409).
+
+Le scénario d'emprunt réussi rend le prêt via l'API juste après avoir vérifié la confirmation, pour rester rejouable plusieurs fois de suite sans redémarrer le backend.
+
 ## Pipeline de traitement des tickets
 
 Les tickets de ce projet ne sont pas codés à la main : chaque évolution part d'une carte Trello déplacée en colonne "Doing", validée puis transformée en GitHub Issue, prise en charge par un agent Claude Code exécuté en mode headless qui plane, code, teste et ouvre une Pull Request sur ce dépôt — sans jamais merger automatiquement. La revue et le merge restent une action humaine.

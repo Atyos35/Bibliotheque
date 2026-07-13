@@ -43,3 +43,8 @@ Thumbs.db
 
 # Other
 commands-front.txt
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

@@ -19,4 +19,9 @@ public class JpaMemberRepository implements MemberRepository {
     public Optional<Member> findById(MemberId id) {
         return springDataMemberRepository.findById(id.value()).map(MemberMapper::toDomain);
     }
+
+    @Override
+    public void save(Member member) {
+        springDataMemberRepository.save(MemberMapper.toEntity(member));
+    }
 }
