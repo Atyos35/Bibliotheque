@@ -1,49 +1,54 @@
-<section class="mx-auto max-w-2xl p-6">
-  <h2 class="mb-4 text-2xl font-semibold text-gray-900">Emprunter un livre</h2>
+<section class="page-section">
+  <h2 class="page-title">Emprunter un livre</h2>
 
   <form (ngSubmit)="borrow()" class="space-y-4">
     <div class="space-y-1">
-      <label for="memberId" class="block text-sm font-medium text-gray-700">Membre (ID)</label>
+      <label for="memberId" class="field-label">Membre (ID)</label>
       <input
         id="memberId"
         name="memberId"
         type="text"
         [(ngModel)]="memberId"
         required
-        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        class="field-input"
       />
     </div>
 
     <div class="space-y-1">
-      <label for="bookId" class="block text-sm font-medium text-gray-700">Livre</label>
-      <select
-        id="bookId"
-        name="bookId"
-        [(ngModel)]="selectedBookId"
-        required
-        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        <option value="" disabled>Sélectionner un livre</option>
-        @for (book of availableBooks; track book.id) {
-          <option [value]="book.id">{{ book.title }} — {{ book.author }}</option>
-        }
-      </select>
+      <label for="bookId" class="field-label">Livre</label>
+      @if (loadingBooks) {
+        <div class="skeleton-block h-9 w-full" aria-busy="true" aria-label="Chargement des livres"></div>
+      } @else {
+        <select
+          id="bookId"
+          name="bookId"
+          [(ngModel)]="selectedBookId"
+          required
+          class="field-input"
+        >
+          <option value="" disabled>Sélectionner un livre</option>
+          @for (book of availableBooks; track book.id) {
+            <option [value]="book.id">{{ book.title }} — {{ book.author }}</option>
+          }
+        </select>
+      }
     </div>
 
-    <button
-      type="submit"
-      [disabled]="!memberId || !selectedBookId"
-      class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
-    >
-      Emprunter
+    <button type="submit" [disabled]="!memberId || !selectedBookId || submitting" class="btn-primary">
+      @if (submitting) {
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Emprunt en cours…</span>
+      } @else {
+        <span>Emprunter</span>
+      }
     </button>
   </form>
 
   @if (errorMessage) {
-    <p class="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{{ errorMessage }}</p>
+    <p class="state-error" role="alert">{{ errorMessage }}</p>
   }
 
   @if (successMessage) {
-    <p class="mt-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-700">{{ successMessage }}</p>
+    <p class="state-success">{{ successMessage }}</p>
   }
 </section>

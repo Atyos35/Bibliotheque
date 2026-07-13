@@ -13,6 +13,7 @@ export class BookListComponent implements OnInit {
 
   availableBooks: BookResponse[] = [];
   loading = true;
+  readonly skeletonRows = [0, 1, 2];
 
   ngOnInit(): void {
     this.booksService.getBooks().subscribe((books) => {
