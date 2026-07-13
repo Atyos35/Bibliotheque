@@ -2,6 +2,7 @@ package com.example.bibliotheque.interfaces.loan;
 
 import com.example.bibliotheque.application.loan.BorrowBookCommand;
 import com.example.bibliotheque.application.loan.BorrowBookUseCase;
+import com.example.bibliotheque.application.loan.ListActiveLoansUseCase;
 import com.example.bibliotheque.application.loan.ReturnBookCommand;
 import com.example.bibliotheque.application.loan.ReturnBookUseCase;
 import com.example.bibliotheque.domain.book.BookId;
@@ -9,12 +10,15 @@ import com.example.bibliotheque.domain.loan.Loan;
 import com.example.bibliotheque.domain.loan.LoanId;
 import com.example.bibliotheque.domain.member.MemberId;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,10 +27,21 @@ public class LoanController {
 
     private final BorrowBookUseCase borrowBookUseCase;
     private final ReturnBookUseCase returnBookUseCase;
+    private final ListActiveLoansUseCase listActiveLoansUseCase;
 
-    public LoanController(BorrowBookUseCase borrowBookUseCase, ReturnBookUseCase returnBookUseCase) {
+    public LoanController(BorrowBookUseCase borrowBookUseCase, ReturnBookUseCase returnBookUseCase,
+                          ListActiveLoansUseCase listActiveLoansUseCase) {
         this.borrowBookUseCase = borrowBookUseCase;
         this.returnBookUseCase = returnBookUseCase;
+        this.listActiveLoansUseCase = listActiveLoansUseCase;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<LoanResponse>> listActiveLoans(@RequestParam String memberId) {
+        List<LoanResponse> activeLoans = listActiveLoansUseCase.execute(MemberId.of(memberId)).stream()
+                .map(LoanResponse::from)
+                .toList();
+        return ResponseEntity.ok(activeLoans);
     }
 
     @PostMapping
