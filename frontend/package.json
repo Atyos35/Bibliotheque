@@ -26,6 +26,7 @@
     "@angular-devkit/build-angular": "^19.2.27",
     "@angular/cli": "^19.2.27",
     "@angular/compiler-cli": "^19.2.0",
+    "@tailwindcss/postcss": "^4.3.2",
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "21.0.1",
     "eslint": "^9.39.1",
@@ -35,6 +36,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "postcss": "^8.5.19",
+    "tailwindcss": "^4.3.2",
     "typescript": "~5.7.2",
     "typescript-eslint": "8.46.4"
   }

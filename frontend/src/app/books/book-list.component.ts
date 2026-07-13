@@ -12,10 +12,12 @@ export class BookListComponent implements OnInit {
   private readonly booksService = inject(BooksService);
 
   availableBooks: BookResponse[] = [];
+  loading = true;
 
   ngOnInit(): void {
     this.booksService.getBooks().subscribe((books) => {
       this.availableBooks = books.filter((book) => book.availableCopies > 0);
+      this.loading = false;
     });
   }
 }
