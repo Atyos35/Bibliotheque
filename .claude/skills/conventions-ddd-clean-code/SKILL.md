@@ -36,7 +36,30 @@ description: Règles DDD tactiques et Clean Code à appliquer sur ce projet, bac
 - Les erreurs métier renvoyées par le backend (409 avec message, voir skill de l'étape Interface côté Java) sont typées elles aussi (`interface ApiError { message: string }`) plutôt que castées en `any` dans un `catchError`.
 - Pas de `!` (non-null assertion) pour contourner le strict null checking — traiter explicitement le cas `null`/`undefined` plutôt que l'écarter par assertion.
 
+## Design et UI (Angular)
+
+- **Tailwind CSS** pour tout le style — jamais de CSS ad hoc dispersé par composant, jamais de contrôle HTML natif laissé sans classes (un `<button>` ou `<input>` non stylé ne sort jamais tel quel).
+- **Cohérence inter-composants** : une palette et une typographie définies une fois (config Tailwind ou classes de base réutilisées), pas choisies au cas par cas à chaque nouveau composant. Un bouton d'action principal doit toujours se reconnaître visuellement d'un composant à l'autre.
+- **États systématiquement stylés** : chargement (spinner ou skeleton, jamais juste "Loading..." en texte brut), erreur (message clair dans un bloc visuellement distinct, pas une alert() ni du texte rouge isolé), liste vide (message explicite plutôt qu'un écran blanc).
+- **Espacement et hiérarchie visuelle** : marges/paddings cohérents (échelle Tailwind standard), titres et labels clairement différenciés du contenu.
+- **Priorité desktop** : le contexte d'usage principal est une démo sur écran d'ordinateur (entretien, vidéo), pas un usage mobile — inutile de sur-investir dans un responsive mobile complet pour ce projet.
+
 ## Exemple
+
+**Mauvais** (contrôle non stylé) :
+```html
+<button (click)="borrow()">Emprunter</button>
+```
+
+**Bon** (cohérent avec le design system du projet) :
+```html
+<button
+  (click)="borrow()"
+  class="rounded-lg bg-emerald-700 px-4 py-2 text-white font-medium hover:bg-emerald-800 transition-colors"
+>
+  Emprunter
+</button>
+```
 
 **Mauvais** (règle métier dans le contrôleur) :
 ```java
