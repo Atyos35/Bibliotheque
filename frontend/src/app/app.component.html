@@ -1,6 +1,15 @@
-<nav>
-  <a routerLink="/books" routerLinkActive="active">Livres</a>
-  <a routerLink="/loans" routerLinkActive="active">Emprunter</a>
-</nav>
+<div class="app-shell">
+  <header class="app-header">
+    <div class="app-header-inner">
+      <span class="app-brand">📚 Bibliothèque</span>
+      <nav class="app-nav">
+        <a routerLink="/books" routerLinkActive="active" class="nav-link">Livres</a>
+        <a routerLink="/loans" routerLinkActive="active" class="nav-link">Emprunter</a>
+      </nav>
+    </div>
+  </header>
 
-<router-outlet />
+  <main>
+    <router-outlet />
+  </main>
+</div>

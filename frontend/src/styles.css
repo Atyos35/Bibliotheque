@@ -7,36 +7,77 @@
  * conventions-ddd-clean-code (section Design et UI).
  */
 @layer components {
+  /* Coquille d'application */
+  .app-shell {
+    @apply min-h-screen bg-slate-50;
+  }
+
+  .app-header {
+    @apply border-b border-slate-200 bg-white;
+  }
+
+  .app-header-inner {
+    @apply mx-auto flex max-w-4xl items-center justify-between px-6 py-4;
+  }
+
+  .app-brand {
+    @apply text-lg font-semibold tracking-tight text-slate-900;
+  }
+
+  .app-nav {
+    @apply flex gap-1;
+  }
+
+  .nav-link {
+    @apply rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900;
+  }
+
+  .nav-link.active {
+    @apply bg-emerald-700 text-white hover:bg-emerald-700 hover:text-white;
+  }
+
+  /* Mise en page de page */
   .page-section {
-    @apply mx-auto max-w-2xl p-6;
+    @apply mx-auto max-w-2xl px-6 py-10;
   }
 
   .page-title {
-    @apply mb-4 text-2xl font-semibold text-gray-900;
+    @apply mb-6 text-2xl font-semibold tracking-tight text-slate-900;
   }
 
-  .field-label {
-    @apply block text-sm font-medium text-gray-700;
-  }
-
-  .field-input {
-    @apply w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-400;
-  }
-
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300;
+  /* Surfaces */
+  .surface {
+    @apply rounded-xl border border-slate-200 bg-white p-6 shadow-sm;
   }
 
   .card {
-    @apply rounded-lg border border-gray-200 bg-white p-4 shadow-sm;
+    @apply rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md;
+  }
+
+  /* Champs et actions */
+  .field-label {
+    @apply block text-sm font-medium text-slate-700;
+  }
+
+  .field-input {
+    @apply w-full rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 disabled:bg-slate-100 disabled:text-slate-400;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300;
+  }
+
+  /* Statuts */
+  .badge-available {
+    @apply inline-flex w-fit items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700;
   }
 
   .skeleton-block {
-    @apply animate-pulse rounded bg-gray-200;
+    @apply animate-pulse rounded bg-slate-200;
   }
 
   .state-empty {
-    @apply rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-gray-500;
+    @apply rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-slate-500;
   }
 
   .state-error {
@@ -44,7 +85,7 @@
   }
 
   .state-success {
-    @apply mt-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-700;
+    @apply mt-4 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700;
   }
 
   .spinner {

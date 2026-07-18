@@ -2,7 +2,7 @@
   <h2 class="page-title">Livres disponibles</h2>
 
   @if (loading) {
-    <ul class="space-y-3" aria-busy="true" aria-label="Chargement des livres">
+    <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2" aria-busy="true" aria-label="Chargement des livres">
       @for (row of skeletonRows; track row) {
         <li class="card">
           <div class="skeleton-block h-4 w-1/2"></div>
@@ -13,11 +13,12 @@
   } @else if (availableBooks.length === 0) {
     <p class="state-empty">Aucun livre disponible pour le moment.</p>
   } @else {
-    <ul class="space-y-3">
+    <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       @for (book of availableBooks; track book.id) {
-        <li class="card">
-          <p class="font-medium text-gray-900">{{ book.title }}</p>
-          <p class="text-sm text-gray-500">{{ book.author }} — {{ book.availableCopies }}/{{ book.totalCopies }} exemplaires</p>
+        <li class="card flex flex-col gap-2">
+          <p class="font-medium text-slate-900">{{ book.title }}</p>
+          <p class="text-sm text-slate-500">{{ book.author }}</p>
+          <span class="badge-available">{{ book.availableCopies }}/{{ book.totalCopies }} exemplaires</span>
         </li>
       }
     </ul>
