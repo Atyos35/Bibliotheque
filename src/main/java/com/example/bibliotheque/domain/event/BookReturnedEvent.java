@@ -6,6 +6,10 @@ import com.example.bibliotheque.domain.member.MemberId;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Événement de domaine immuable décrivant un fait passé — émis quand un {@code Loan} est clôturé
+ * pour signaler qu'un exemplaire de livre vient d'être rendu.
+ */
 public record BookReturnedEvent(
         LoanId loanId,
         BookId bookId,

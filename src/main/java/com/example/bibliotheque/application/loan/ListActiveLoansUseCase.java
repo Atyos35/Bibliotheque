@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
+/**
+ * Use case qui orchestre la consultation des emprunts actifs d'un membre, aucune règle métier ici :
+ * le filtrage s'appuie sur {@link Loan#isActive()}.
+ */
 @Service
 public final class ListActiveLoansUseCase {
 
@@ -19,6 +23,10 @@ public final class ListActiveLoansUseCase {
         this.loanRepository = Objects.requireNonNull(loanRepository, "LoanRepository cannot be null.");
     }
 
+    /**
+     * Vérifie que le membre existe, puis retourne ses emprunts en cours (non encore rendus).
+     * Lève {@link MemberNotFoundException} si le membre est inconnu.
+     */
     public List<Loan> execute(MemberId memberId) {
         Objects.requireNonNull(memberId, "MemberId cannot be null.");
         memberRepository.findById(memberId)

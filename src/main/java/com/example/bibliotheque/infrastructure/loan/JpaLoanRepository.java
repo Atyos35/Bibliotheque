@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Implémentation JPA du port {@link LoanRepository} défini par le domaine. Adaptateur technique qui
+ * délègue la persistance effective à {@link SpringDataLoanRepository} et traduit via {@link LoanMapper}.
+ */
 @Repository
 public class JpaLoanRepository implements LoanRepository {
 

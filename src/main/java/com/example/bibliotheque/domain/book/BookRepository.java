@@ -3,6 +3,10 @@ package com.example.bibliotheque.domain.book;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Port du domaine pour la persistance des {@link Book}, implémenté en infrastructure
+ * par {@code JpaBookRepository}.
+ */
 public interface BookRepository {
 
     Optional<Book> findById(BookId id);

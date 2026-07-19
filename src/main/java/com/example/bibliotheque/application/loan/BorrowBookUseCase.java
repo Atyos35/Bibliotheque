@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
+/**
+ * Use case qui orchestre l'emprunt d'un livre par un membre, aucune règle métier ici : chaque
+ * décision (droit d'emprunter, disponibilité, limites d'emprunts) est déléguée au domaine.
+ */
 @Service
 public final class BorrowBookUseCase {
 
@@ -26,6 +30,11 @@ public final class BorrowBookUseCase {
         this.loanRepository = Objects.requireNonNull(loanRepository, "LoanRepository cannot be null.");
     }
 
+    /**
+     * Vérifie que le membre existe et peut emprunter, que le livre existe, crée l'emprunt (qui valide
+     * ses propres invariants, dont la limite d'emprunts actifs), décrémente les exemplaires
+     * disponibles du livre, puis persiste l'emprunt et le livre.
+     */
     public Loan execute(BorrowBookCommand command) {
         Member member = memberRepository.findById(command.memberId())
                 .orElseThrow(() -> new MemberNotFoundException("Member not found: " + command.memberId()));

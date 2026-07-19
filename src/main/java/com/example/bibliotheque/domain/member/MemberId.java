@@ -3,6 +3,7 @@ package com.example.bibliotheque.domain.member;
 import java.util.Objects;
 import java.util.UUID;
 
+/** Value Object identifiant un {@link Member} de façon unique, encapsulant un UUID. */
 public final class MemberId {
 
     private final UUID value;
@@ -11,10 +12,15 @@ public final class MemberId {
         this.value = value;
     }
 
+    /** Génère un nouvel identifiant unique, destiné à un membre qui n'existe pas encore. */
     public static MemberId generate() {
         return new MemberId(UUID.randomUUID());
     }
 
+    /**
+     * Reconstruit un identifiant à partir de sa représentation textuelle.
+     * Lève {@link InvalidMemberIdException} si {@code rawValue} est nul, vide, ou n'est pas un UUID valide.
+     */
     public static MemberId of(String rawValue) {
         if (rawValue == null || rawValue.isBlank()) {
             throw new InvalidMemberIdException("MemberId cannot be null or blank.");

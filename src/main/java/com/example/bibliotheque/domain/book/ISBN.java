@@ -1,11 +1,18 @@
 package com.example.bibliotheque.domain.book;
 
+/**
+ * Value Object immuable qui valide le format ISBN-13 (13 chiffres + checksum) d'un {@link Book}.
+ */
 public final class ISBN {
 
     private static final int ISBN_13_LENGTH = 13;
 
     private final String value;
 
+    /**
+     * Normalise (retire espaces et tirets) puis valide {@code rawValue}. Lève
+     * {@link InvalidIsbnException} si le résultat n'est pas 13 chiffres avec un checksum valide.
+     */
     public ISBN(String rawValue) {
         String normalized = normalize(rawValue);
         validate(normalized);

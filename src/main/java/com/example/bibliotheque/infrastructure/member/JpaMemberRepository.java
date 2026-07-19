@@ -6,6 +6,10 @@ import com.example.bibliotheque.domain.member.MemberRepository;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Implémentation JPA du port {@link MemberRepository} défini par le domaine. Adaptateur technique qui
+ * délègue la persistance effective à {@link SpringDataMemberRepository} et traduit via {@link MemberMapper}.
+ */
 @Repository
 public class JpaMemberRepository implements MemberRepository {
 

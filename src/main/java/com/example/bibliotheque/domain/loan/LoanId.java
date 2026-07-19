@@ -3,6 +3,7 @@ package com.example.bibliotheque.domain.loan;
 import java.util.Objects;
 import java.util.UUID;
 
+/** Value Object identifiant un {@link Loan} de façon unique, encapsulant un UUID. */
 public final class LoanId {
 
     private final UUID value;
@@ -11,10 +12,15 @@ public final class LoanId {
         this.value = value;
     }
 
+    /** Génère un nouvel identifiant unique, destiné à un emprunt qui n'existe pas encore. */
     public static LoanId generate() {
         return new LoanId(UUID.randomUUID());
     }
 
+    /**
+     * Reconstruit un identifiant à partir de sa représentation textuelle.
+     * Lève {@link InvalidLoanIdException} si {@code rawValue} est nul, vide, ou n'est pas un UUID valide.
+     */
     public static LoanId of(String rawValue) {
         if (rawValue == null || rawValue.isBlank()) {
             throw new InvalidLoanIdException("LoanId cannot be null or blank.");

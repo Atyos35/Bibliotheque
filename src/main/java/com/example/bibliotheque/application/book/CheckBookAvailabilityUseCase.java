@@ -7,6 +7,10 @@ import com.example.bibliotheque.domain.book.BookRepository;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
+/**
+ * Use case qui orchestre la consultation de la disponibilité d'un livre, aucune règle métier ici :
+ * la décision revient entièrement à {@link Book#isAvailable()}.
+ */
 @Service
 public final class CheckBookAvailabilityUseCase {
 
@@ -16,6 +20,7 @@ public final class CheckBookAvailabilityUseCase {
         this.bookRepository = Objects.requireNonNull(bookRepository, "BookRepository cannot be null.");
     }
 
+    /** Recherche le livre par son identifiant et indique s'il a au moins un exemplaire disponible. */
     public boolean execute(BookId bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found: " + bookId));

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
+/** Use case qui orchestre la consultation du catalogue complet des livres, aucune règle métier ici. */
 @Service
 public final class ListBooksUseCase {
 
@@ -15,6 +16,7 @@ public final class ListBooksUseCase {
         this.bookRepository = Objects.requireNonNull(bookRepository, "BookRepository cannot be null.");
     }
 
+    /** Retourne l'ensemble des livres du catalogue. */
     public List<Book> execute() {
         return bookRepository.findAll();
     }

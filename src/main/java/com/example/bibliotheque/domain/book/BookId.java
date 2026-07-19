@@ -3,6 +3,9 @@ package com.example.bibliotheque.domain.book;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Value Object identifiant un {@link Book} de façon unique, sous la forme d'un UUID.
+ */
 public final class BookId {
 
     private final UUID value;
@@ -11,10 +14,16 @@ public final class BookId {
         this.value = value;
     }
 
+    /** Génère un nouvel identifiant unique, destiné à un livre pas encore persisté. */
     public static BookId generate() {
         return new BookId(UUID.randomUUID());
     }
 
+    /**
+     * Reconstitue un identifiant à partir de sa représentation textuelle (ex. depuis la persistance
+     * ou une requête HTTP). Lève {@link InvalidBookIdException} si {@code rawValue} est
+     * {@code null}, vide, ou n'est pas un UUID valide.
+     */
     public static BookId of(String rawValue) {
         if (rawValue == null || rawValue.isBlank()) {
             throw new InvalidBookIdException("BookId cannot be null or blank.");

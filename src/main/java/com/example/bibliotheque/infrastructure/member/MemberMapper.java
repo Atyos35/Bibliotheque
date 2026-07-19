@@ -5,6 +5,7 @@ import com.example.bibliotheque.domain.member.Member;
 import com.example.bibliotheque.domain.member.MemberId;
 import com.example.bibliotheque.domain.member.MembershipStatus;
 
+/** Traduit un {@link Member} du domaine vers/depuis sa représentation de persistance {@link MemberEntity}. */
 public final class MemberMapper {
 
     private MemberMapper() {

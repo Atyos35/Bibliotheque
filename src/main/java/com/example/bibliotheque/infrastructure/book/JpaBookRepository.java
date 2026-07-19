@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Implémentation JPA du port {@link BookRepository} défini par le domaine. Adaptateur technique qui
+ * délègue la persistance effective à {@link SpringDataBookRepository} et traduit via {@link BookMapper}.
+ */
 @Repository
 public class JpaBookRepository implements BookRepository {
 

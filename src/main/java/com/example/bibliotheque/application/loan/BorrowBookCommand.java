@@ -5,6 +5,7 @@ import com.example.bibliotheque.domain.member.MemberId;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/** Commande applicative portant les données nécessaires à l'exécution de {@link BorrowBookUseCase}. */
 public record BorrowBookCommand(MemberId memberId, BookId bookId, LocalDateTime borrowedAt) {
 
     public BorrowBookCommand {

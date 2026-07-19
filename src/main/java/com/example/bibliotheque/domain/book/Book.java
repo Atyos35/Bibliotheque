@@ -2,6 +2,10 @@ package com.example.bibliotheque.domain.book;
 
 import java.util.Objects;
 
+/**
+ * Agrégat racine représentant un livre du catalogue. Protège l'invariant selon lequel
+ * {@code availableCopies} ne peut jamais être négatif ni dépasser {@code totalCopies}.
+ */
 public final class Book {
 
     private final BookId id;
@@ -11,6 +15,11 @@ public final class Book {
     private final int totalCopies;
     private int availableCopies;
 
+    /**
+     * Reconstitue un livre existant (depuis la persistance, ou avec un nombre d'exemplaires
+     * disponibles différent du total). Lève {@link InvalidBookCopiesException} si les
+     * quantités violent l'invariant.
+     */
     public Book(BookId id, ISBN isbn, String title, String author, int totalCopies, int availableCopies) {
         this.id = Objects.requireNonNull(id, "BookId cannot be null.");
         this.isbn = Objects.requireNonNull(isbn, "ISBN cannot be null.");
@@ -21,14 +30,20 @@ public final class Book {
         this.availableCopies = availableCopies;
     }
 
+    /** Crée un nouveau livre dont tous les exemplaires sont initialement disponibles. */
     public static Book create(BookId id, ISBN isbn, String title, String author, int totalCopies) {
         return new Book(id, isbn, title, author, totalCopies, totalCopies);
     }
 
+    /** Indique si au moins un exemplaire est actuellement disponible à l'emprunt. */
     public boolean isAvailable() {
         return availableCopies > 0;
     }
 
+    /**
+     * Décrémente le nombre d'exemplaires disponibles lors d'un emprunt.
+     * Lève {@link BookNotAvailableException} si aucun exemplaire n'est disponible.
+     */
     public void borrowCopy() {
         if (availableCopies <= 0) {
             throw new BookNotAvailableException("No available copy for book " + id + ".");
@@ -36,6 +51,11 @@ public final class Book {
         availableCopies--;
     }
 
+    /**
+     * Incrémente le nombre d'exemplaires disponibles lors d'un retour.
+     * Lève {@link InvalidBookCopiesException} si l'incrément dépasserait le nombre total
+     * d'exemplaires (signe d'une incohérence appelante, pas d'un cas métier normal).
+     */
     public void returnCopy() {
         if (availableCopies >= totalCopies) {
             throw new InvalidBookCopiesException(

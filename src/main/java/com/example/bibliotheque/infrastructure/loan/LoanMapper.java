@@ -5,6 +5,7 @@ import com.example.bibliotheque.domain.loan.Loan;
 import com.example.bibliotheque.domain.loan.LoanId;
 import com.example.bibliotheque.domain.member.MemberId;
 
+/** Traduit un {@link Loan} du domaine vers/depuis sa représentation de persistance {@link LoanEntity}. */
 public final class LoanMapper {
 
     private LoanMapper() {

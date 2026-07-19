@@ -7,6 +7,10 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Entité JPA de persistance de l'emprunt. Simple structure de données pour Hibernate : ne porte
+ * aucune règle métier, celle-ci reste dans l'agrégat {@link com.example.bibliotheque.domain.loan.Loan}.
+ */
 @Entity
 @Table(name = "loans")
 public class LoanEntity {

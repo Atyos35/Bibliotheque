@@ -2,6 +2,10 @@ package com.example.bibliotheque.domain.member;
 
 import java.util.Objects;
 
+/**
+ * Agrégat racine représentant un membre de la bibliothèque. Porte le statut d'adhésion qui conditionne
+ * le droit d'emprunter, voir {@link #canBorrow()}.
+ */
 public final class Member {
 
     private final MemberId id;
@@ -16,6 +20,11 @@ public final class Member {
         this.membershipStatus = Objects.requireNonNull(membershipStatus, "membershipStatus cannot be null.");
     }
 
+    /**
+     * Indique si ce membre est autorisé à initier un nouvel emprunt. Seul le statut
+     * {@link MembershipStatus#ACTIVE} l'autorise : un membre {@link MembershipStatus#SUSPENDED} ne peut
+     * emprunter aucun livre, quel que soit le nombre de ses emprunts actifs en cours.
+     */
     public boolean canBorrow() {
         return membershipStatus == MembershipStatus.ACTIVE;
     }

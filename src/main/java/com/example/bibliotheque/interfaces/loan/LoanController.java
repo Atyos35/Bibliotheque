@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Contrôleur REST exposant la consultation et la gestion des emprunts. Traduit les requêtes
+ * HTTP en commandes applicatives ; aucune règle métier n'est décidée ici.
+ */
 @RestController
 @RequestMapping("/api/loans")
 public class LoanController {
@@ -36,6 +40,7 @@ public class LoanController {
         this.listActiveLoansUseCase = listActiveLoansUseCase;
     }
 
+    /** Liste les emprunts actifs (non encore retournés) du membre désigné. */
     @GetMapping
     public ResponseEntity<List<LoanResponse>> listActiveLoans(@RequestParam String memberId) {
         List<LoanResponse> activeLoans = listActiveLoansUseCase.execute(MemberId.of(memberId)).stream()
@@ -44,6 +49,7 @@ public class LoanController {
         return ResponseEntity.ok(activeLoans);
     }
 
+    /** Crée un nouvel emprunt pour le membre et le livre désignés dans la requête. */
     @PostMapping
     public ResponseEntity<LoanResponse> borrow(@RequestBody BorrowBookRequest request) {
         BorrowBookCommand command = new BorrowBookCommand(
@@ -54,6 +60,7 @@ public class LoanController {
         return ResponseEntity.status(HttpStatus.CREATED).body(LoanResponse.from(loan));
     }
 
+    /** Marque l'emprunt désigné comme retourné. */
     @PostMapping("/{loanId}/return")
     public ResponseEntity<LoanResponse> returnBook(@PathVariable String loanId) {
         ReturnBookCommand command = new ReturnBookCommand(LoanId.of(loanId), LocalDateTime.now());

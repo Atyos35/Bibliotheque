@@ -6,6 +6,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.util.UUID;
 
+/**
+ * Entité JPA de persistance du livre. Simple structure de données pour Hibernate : ne porte aucune
+ * règle métier, celle-ci reste dans l'agrégat {@link com.example.bibliotheque.domain.book.Book}.
+ */
 @Entity
 @Table(name = "books")
 public class BookEntity {

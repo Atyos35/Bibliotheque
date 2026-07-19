@@ -40,6 +40,7 @@ public class DemoDataSeeder implements CommandLineRunner {
         this.memberRepository = memberRepository;
     }
 
+    /** Insère deux livres et un membre actif, avec des identifiants fixes réutilisables depuis le README. */
     @Override
     public void run(String... args) {
         bookRepository.save(Book.create(BookId.of(BOOK_1984_ID), new ISBN("9780451524935"), "1984",

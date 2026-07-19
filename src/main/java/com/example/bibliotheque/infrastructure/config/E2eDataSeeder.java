@@ -52,6 +52,10 @@ public class E2eDataSeeder implements CommandLineRunner {
         this.loanRepository = loanRepository;
     }
 
+    /**
+     * Insère deux livres, trois membres (actif, suspendu, à la limite d'emprunts) et des emprunts
+     * actifs pour le membre à la limite, afin de couvrir les scénarios Playwright.
+     */
     @Override
     public void run(String... args) {
         bookRepository.save(Book.create(BookId.of(CATALOG_BOOK_ID), new ISBN("9780132350884"), CATALOG_BOOK_TITLE,

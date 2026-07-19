@@ -6,6 +6,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.util.UUID;
 
+/**
+ * Entité JPA de persistance du membre. Simple structure de données pour Hibernate : ne porte aucune
+ * règle métier, celle-ci reste dans l'agrégat {@link com.example.bibliotheque.domain.member.Member}.
+ */
 @Entity
 @Table(name = "members")
 public class MemberEntity {

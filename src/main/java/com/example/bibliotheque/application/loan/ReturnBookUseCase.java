@@ -7,6 +7,10 @@ import com.example.bibliotheque.domain.loan.LoanRepository;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
+/**
+ * Use case qui orchestre le retour d'un livre emprunté, aucune règle métier ici : la validation du
+ * retour est déléguée à {@link Loan#returnBook(java.time.LocalDateTime)}.
+ */
 @Service
 public final class ReturnBookUseCase {
 
@@ -18,6 +22,10 @@ public final class ReturnBookUseCase {
         this.bookRepository = Objects.requireNonNull(bookRepository, "BookRepository cannot be null.");
     }
 
+    /**
+     * Retrouve l'emprunt, enregistre son retour (qui valide ses invariants), incrémente les
+     * exemplaires disponibles du livre correspondant, puis persiste l'emprunt et le livre.
+     */
     public Loan execute(ReturnBookCommand command) {
         Loan loan = loanRepository.findById(command.loanId())
                 .orElseThrow(() -> new LoanNotFoundException("Loan not found: " + command.loanId()));

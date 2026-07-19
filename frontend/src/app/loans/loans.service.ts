@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BorrowBookRequest, LoanResponse } from './loan.model';
 
+/** Service HTTP dédié aux emprunts — consomme POST /api/loans. */
 @Injectable({ providedIn: 'root' })
 export class LoansService {
   private readonly http = inject(HttpClient);

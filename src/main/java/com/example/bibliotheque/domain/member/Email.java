@@ -2,6 +2,7 @@ package com.example.bibliotheque.domain.member;
 
 import java.util.regex.Pattern;
 
+/** Value Object représentant une adresse email valide de {@link Member}. Auto-validante à la construction. */
 public final class Email {
 
     private static final Pattern EMAIL_PATTERN =
@@ -9,6 +10,7 @@ public final class Email {
 
     private final String value;
 
+    /** Construit une adresse email. Lève {@link InvalidEmailException} si le format ne correspond pas à un email. */
     public Email(String rawValue) {
         validate(rawValue);
         this.value = rawValue;
