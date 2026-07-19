@@ -36,6 +36,8 @@ mvn spring-boot:run
 
 Console H2 disponible sur `http://localhost:8080/h2-console` (JDBC URL : `jdbc:h2:mem:bibliotheque`, utilisateur `sa`, mot de passe vide).
 
+Un jeu de données minimal est inséré automatiquement au démarrage (`DemoDataSeeder`) pour que le catalogue et le formulaire d'emprunt ne soient pas vides : deux livres (« 1984 », « Dune ») et un membre actif, Marie Curie, dont l'ID (`d0000000-0000-0000-0000-000000000001`) est fixe et à saisir tel quel dans le champ « Membre (ID) » du formulaire d'emprunt du frontend, faute d'endpoint de consultation des membres. Ce seeder est exclu pendant `mvn test` et sous le profil `e2e-seed` (voir plus bas) — il n'interfère avec aucun des deux.
+
 ### Backend — profil `prod`, PostgreSQL
 
 Le profil `prod` lit sa configuration exclusivement depuis des variables d'environnement (aucune valeur sensible en dur dans le dépôt, `ddl-auto: validate` — le schéma doit déjà exister) :
