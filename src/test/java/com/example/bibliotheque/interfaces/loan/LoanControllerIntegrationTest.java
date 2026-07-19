@@ -1,6 +1,8 @@
 package com.example.bibliotheque.interfaces.loan;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -221,5 +223,42 @@ class LoanControllerIntegrationTest {
     void returningAnUnknownLoanIsRefusedWithNotFound() throws Exception {
         mockMvc.perform(post("/api/loans/" + LoanId.generate() + "/return"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void listingActiveLoansReturnsOnlyTheMembersActiveLoans() throws Exception {
+        MemberId memberId = givenAnActiveMember();
+        BookId activeBookId = givenAnAvailableBook();
+        Loan activeLoan = Loan.borrow(LoanId.generate(), activeBookId, memberId, LocalDateTime.now(),
+                List.of());
+        Loan returnedLoan = Loan.borrow(LoanId.generate(), BookId.generate(), memberId, LocalDateTime.now(),
+                List.of(activeLoan));
+        returnedLoan.returnBook(LocalDateTime.now());
+        loanRepository.save(activeLoan);
+        loanRepository.save(returnedLoan);
+
+        mockMvc.perform(get("/api/loans").param("memberId", memberId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(activeLoan.id().toString()))
+                .andExpect(jsonPath("$[0].bookId").value(activeBookId.toString()))
+                .andExpect(jsonPath("$[0].borrowedAt", notNullValue()))
+                .andExpect(jsonPath("$[0].active").value(true));
+    }
+
+    @Test
+    void listingActiveLoansForMemberWithoutLoansReturnsEmptyList() throws Exception {
+        MemberId memberId = givenAnActiveMember();
+
+        mockMvc.perform(get("/api/loans").param("memberId", memberId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    void listingActiveLoansForUnknownMemberIsRefusedWithNotFound() throws Exception {
+        mockMvc.perform(get("/api/loans").param("memberId", MemberId.generate().toString()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", notNullValue()));
     }
 }
